@@ -1,0 +1,24 @@
+{
+  "name": "puppet-showrunner-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miquelromero/puppet-showrunner-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miquelromero/puppet-showrunner-server/issues"
+  },
+  "homepage": "https://github.com/miquelromero/puppet-showrunner-server#readme",
+  "dependencies": {
+    "apollo-server": "^2.3.1",
+    "graphql": "^14.0.2"
+  }
+}
