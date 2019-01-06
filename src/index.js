@@ -11,8 +11,8 @@ const store = createStore();
 
 // set up any dataSources our resolvers need
 const dataSources = () => ({
-  databaseAPI: new DatabaseAPI(store),
-  runsManagerAPI: new RunsManagerAPI(),
+  databaseAPI: new DatabaseAPI({store}),
+  runsManagerAPI: new RunsManagerAPI({store}),
   osUtilsAPI: new OsUtilsAPI()
 });
 

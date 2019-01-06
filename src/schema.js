@@ -11,9 +11,9 @@ const typeDefs = gql`
 
   type Mutation {
     createRun(
-      puppetType: String,
       numberOfPuppets: Int, 
       maxWorkingPuppets: Int, 
+      puppetTypeName: String,
       puppetParams: [ParamValueInput]
     ): Run
     createRunByConfig(
@@ -37,7 +37,7 @@ const typeDefs = gql`
     id: ID!
     config: Config
     puppets: [Puppet]
-    startTime: String
+    createdAt: String
     isOngoing: Boolean
   }
 
