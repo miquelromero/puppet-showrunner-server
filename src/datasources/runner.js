@@ -23,10 +23,20 @@ class RunsManagerAPI extends DataSource {
     this.store = store;
   }
 
-  createRun(runId, config) {
+  async createPuppet(runId) {
+    return await this.store.puppets.create({runId});
+  }
+
+  async createRun(runId, config) {
     const args = configToArgs(config);
     const child = child_process.fork('src/runner/run.js', args, { silent: false });
-    console.log(this.store);
+    child.on('message', async (message) => {
+      console.log('child says:', message);
+      if (message.type === 'createPuppet') {
+        const createdPuppet = await this.createPuppet(runId);
+        child.send({type: 'puppetCreated', puppetId: message.puppetId, id: createdPuppet.id})
+      }
+    });
     this.store.ongoingRuns[runId] = child;
     return child;
   }

@@ -1,5 +1,4 @@
 const { DataSource } = require('apollo-datasource');
-const { runs, configs, puppets } = require("../mocks/database");
 
 const parseConfigParams = (config) => {
   config.puppetParams = JSON.parse(config.puppetParams);
@@ -26,14 +25,15 @@ class DatabaseAPI extends DataSource {
     }});
   }
 
-  getPuppet(id) {
-    return puppets.find((puppet) => puppet.id == id);
+  async getPuppet(id) {
+    return await this.store.puppets.findByPk(id);
   }
 
-  getPuppetsByRun(runId) {
-    return puppets.filter((puppet) => puppet.runId == runId);
+  async getPuppetsByRun(runId) {
+    return this.store.puppets.findAll({where: {
+      runId: runId
+    }});
   }
-
   async getConfigs() {
     const configs = await this.store.configs.findAll();
     return configs.map(parseConfigParams)

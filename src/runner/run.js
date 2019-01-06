@@ -12,11 +12,18 @@ const puppetParamsToArgs = (puppetParams) => {
 }
 
 const { puppetTypeName, numberOfPuppets, maxWorkingPuppets, puppetParams } = argv;
-
 const puppetPath = 'src/runner/puppets/' + puppetTypeName + '.js';
 const puppetArgs = puppetParamsToArgs(puppetParams);
 
-for (let i = 0; i <= numberOfPuppets; i++) {
-  // TODO: Add it to database somehow and listen to its changes
-  child_process.fork(puppetPath, puppetArgs, { silent: false });
+const puppets = {}
+
+for (let i = 0; i < numberOfPuppets; i++) {
+  let puppetId = i;
+  process.send({type: 'createPuppet', puppetId: puppetId});
+  process.on('message', (message) => {
+    if (message.type === 'puppetCreated' && message.puppetId == puppetId) {
+      console.log('parent says:', message);
+      puppets[message.id] = child_process.fork(puppetPath, puppetArgs, { silent: false });
+    }
+  })
 }

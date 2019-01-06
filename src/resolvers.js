@@ -2,7 +2,7 @@ const { puppetTypes } = require("./mocks/puppet-types");
 
 module.exports = {
   Query: {
-    puppets: (root, { runId }, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(runId),
+    puppets: async (root, { runId }, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(runId),
     runs: async (root, _args, { dataSources }) => dataSources.databaseAPI.getRuns(),
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: (root, _args, context) => true, // TODO: Find a better way of doing this
@@ -27,7 +27,7 @@ module.exports = {
     }
   },
   Run: {
-    puppets: (run, _args, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(run.id),
+    puppets: async (run, _args, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(run.id),
     config: async (run, _args, { dataSources }) => dataSources.databaseAPI.getConfig(run.configId),
     isOngoing: (run, _args, { dataSources }) => dataSources.runsManagerAPI.isOngoing(run.id),
   },
