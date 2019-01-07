@@ -1,21 +1,5 @@
-const child_process = require('child_process');
 const { DataSource } = require('apollo-datasource');
-
-const buildArguments = (runId, config) => {
-  runnerConfig = {
-    runId: runId,
-    puppetTypeName: config.puppetTypeName,
-    numberOfPuppets: config.numberOfPuppets,
-    maxWorkingPuppets: config.maxWorkingPuppets,
-    puppetParams: JSON.stringify(config.puppetParams)
-  }
-  let args = [];
-  for (let [key, value] of Object.entries(runnerConfig)) {
-    args.push('--' + key);
-    args.push('' + value);
-  };
-  return args;
-}
+const Run = require('../runner/run')
 
 class RunsManagerAPI extends DataSource {
 
@@ -28,17 +12,8 @@ class RunsManagerAPI extends DataSource {
     return await this.store.puppets.create({runId});
   }
 
-  async createRun(runId, config) {
-    const args = buildArguments(runId, config);
-    const child = child_process.fork('src/runner/run.js', args, { silent: false });
-    child.on('message', async (message) => {
-      if (message.type === 'createPuppet') {
-        const createdPuppet = await this.createPuppet(runId);
-        child.send({type: 'puppetCreated', puppetInternalId: message.puppetInternalId, puppetId: createdPuppet.id})
-      }
-    });
-    this.store.ongoingRuns[runId] = child;
-    return child;
+  async createRun(runId, {puppetTypeName, numberOfPuppets, puppetParams}) {
+    this.store.ongoingRuns[runId] = new Run(this.store, runId, puppetTypeName, numberOfPuppets, puppetParams);
   }
 
   isOngoing(runId) {

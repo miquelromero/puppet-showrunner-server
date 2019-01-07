@@ -1,42 +1,46 @@
 const child_process = require('child_process');
-const logger = require('./logger');
+const logger = require('./utils/logger');
+const {buildPuppetArgs, getPuppetPath} = require('./utils/run-helper');
 
-const argv = require('minimist')(process.argv.slice(2));
+class Run {
+  constructor(store, runId, puppetTypeName, numberOfPuppets, puppetParams) {
+    this.store = store;
+    this.id = runId;
+    this.puppetTypeName = puppetTypeName;
+    this.puppetPath = getPuppetPath(puppetTypeName);
+    this.numberOfPuppets = numberOfPuppets;
+    this.puppetParams = puppetParams;
+    this.puppets = {};
+    this.start()
+    return;
+  }
 
-const { runId, puppetTypeName, numberOfPuppets, maxWorkingPuppets, puppetParams } = argv;
+  async createPuppet() {
+    const puppet = await this.store.puppets.create({runId: this.id});
+    const puppetArgs = buildPuppetArgs(puppet.id, this.puppetParams)
+    console.log(puppetArgs);
+    
+    const child = child_process.fork(this.puppetPath, puppetArgs, { silent: true });
+    child.stdout.on('data', (data) => {
+      logger.info(data.toString().slice(0, -1), {runId: this.id, puppetId: puppet.id});
+    })
+    child.stderr.on('data', (data) => {
+      logger.error(data.toString().slice(0, -1), {runId: this.id, puppetId: puppet.id});
+    })
+    this.addPuppet(puppet.id, child);
+  }
 
-const puppetParamsToArgs = (puppetParams) => {
-  params = JSON.parse(puppetParams);
-  let args = [];
-  params.forEach((param) => {
-    args.push('--' + param.param);
-    args.push('' + param.value);
-  })
-  return args;
-}
+  addPuppet(puppetId, child) {
+    this.puppets[puppetId] = child;
+  }
 
-logger.info('Run has started', {runId})
-
-const puppets = {}
-
-const puppetPath = 'src/runner/puppets/' + puppetTypeName + '.js';
-const puppetArgs = puppetParamsToArgs(puppetParams);
-for (let i = 0; i < numberOfPuppets; i++) {
-  let puppetInternalId = i;
-  process.send({type: 'createPuppet', puppetInternalId: puppetInternalId});
-  process.on('message', (message) => {
-    if (message.type === 'puppetCreated' && message.puppetInternalId == puppetInternalId) {
-      const puppetId = message.puppetId;
-      child = child_process.fork(puppetPath, puppetArgs, { silent: true });
-      child.stdout.on('data', (data) => {
-        logger.info(data.toString().slice(0, -1), {runId, puppetId});
-      })
-      child.stderr.on('data', (data) => {
-        logger.error(data.toString().slice(0, -1), {runId, puppetId});
-      })
-      puppets[puppetId] = child;
+  async start() {
+    logger.info('Run has started', {runId: this.id})
+    for (let i = 0; i < this.numberOfPuppets; i++) {
+      this.createPuppet()
     }
-  })
+    logger.info('Run has ended', {runId: this.id})
+  }
 }
 
-logger.info('Run has ended', {runId})
+module.exports = Run;
