@@ -4,6 +4,7 @@ const typeDefs = require("./schema");
 const DatabaseAPI = require('./datasources/database');
 const RunsManagerAPI = require('./datasources/runner');
 const OsUtilsAPI = require('./datasources/os-utils');
+const LogsAPI = require('./datasources/logs');
 const { createStore } = require('./store');
 
 // creates a database connection once. NOT for every request
@@ -13,7 +14,8 @@ const store = createStore();
 const dataSources = () => ({
   databaseAPI: new DatabaseAPI({store}),
   runsManagerAPI: new RunsManagerAPI({store}),
-  osUtilsAPI: new OsUtilsAPI()
+  osUtilsAPI: new OsUtilsAPI(),
+  logsAPI: new LogsAPI()
 });
 
 // Set up Apollo Server

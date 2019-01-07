@@ -15,11 +15,7 @@ const puppetParamsToArgs = (puppetParams) => {
   return args;
 }
 
-const loggerMeta = {
-  run: runId
-}
-
-logger.info('Run has started', loggerMeta)
+logger.info('Run has started', {runId})
 
 const puppets = {}
 
@@ -33,14 +29,14 @@ for (let i = 0; i < numberOfPuppets; i++) {
       const puppetId = message.puppetId;
       child = child_process.fork(puppetPath, puppetArgs, { silent: true });
       child.stdout.on('data', (data) => {
-        logger.info(data.toString().slice(0, -1), {...loggerMeta, puppet: puppetId});
+        logger.info(data.toString().slice(0, -1), {runId, puppetId});
       })
       child.stderr.on('data', (data) => {
-        logger.error(data.toString().slice(0, -1), {...loggerMeta, puppet: puppetId});
+        logger.error(data.toString().slice(0, -1), {runId, puppetId});
       })
       puppets[puppetId] = child;
     }
   })
 }
 
-logger.info('Run has ended', loggerMeta)
+logger.info('Run has ended', {runId})

@@ -6,7 +6,8 @@ module.exports = {
     runs: async (root, _args, { dataSources }) => dataSources.databaseAPI.getRuns(),
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: (root, _args, context) => true, // TODO: Find a better way of doing this
-    puppetTypes: (root, _args, context) => puppetTypes
+    puppetTypes: (root, _args, context) => puppetTypes,
+    logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs()
   },
   Mutation: {
     createRun: async (_, config, { dataSources }) => {
@@ -30,9 +31,11 @@ module.exports = {
     puppets: async (run, _args, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(run.id),
     config: async (run, _args, { dataSources }) => dataSources.databaseAPI.getConfig(run.configId),
     isOngoing: (run, _args, { dataSources }) => dataSources.runsManagerAPI.isOngoing(run.id),
+    logs: (run, _args, { dataSources }) => dataSources.logsAPI.getLogsByRun(run.id)
   },
   Puppet: {
-    run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId)
+    run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId),
+    logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id)
   },
   Config: {
     runs: async (config, _args, { dataSources }) => dataSources.databaseAPI.getRunsByConfig(config.id),
@@ -48,5 +51,9 @@ module.exports = {
     freememPercentage: (_source, _args, { dataSources }) => dataSources.osUtilsAPI.getFreememPercentage(),
     sysUptime: (_source, _args, { dataSources }) => dataSources.osUtilsAPI.getSysUptime(),
     processUptime: (_source, _args, { dataSources }) => dataSources.osUtilsAPI.getProcessUptime()
+  },
+  Log: {
+    puppet: async (log, _args, { dataSources }) => dataSources.databaseAPI.getPuppet(log.puppetId),
+    run: async (log, _args, { dataSources }) => dataSources.databaseAPI.getRun(log.runId)
   }
 }

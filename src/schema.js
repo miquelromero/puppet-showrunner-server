@@ -7,6 +7,7 @@ const typeDefs = gql`
     puppets(runId: ID!): [Puppet]
     stats: Stats
     puppetTypes: [PuppetType]
+    logs: [Log]
   }
 
   type Mutation {
@@ -31,6 +32,7 @@ const typeDefs = gql`
     url: String
     state: String
     run: Run
+    logs: [Log]
   }
 
   type Run {
@@ -39,6 +41,7 @@ const typeDefs = gql`
     puppets: [Puppet]
     createdAt: String
     isOngoing: Boolean
+    logs: [Log]
   }
 
   type Config {
@@ -79,6 +82,14 @@ const typeDefs = gql`
     freememPercentage: Float
     sysUptime: Float
     processUptime: Float
+  }
+
+  type Log {
+    run: Run
+    puppet: Puppet
+    level: String
+    message: String
+    timestamp: String
   }
 `;
 
