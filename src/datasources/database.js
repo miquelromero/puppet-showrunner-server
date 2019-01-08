@@ -44,11 +44,10 @@ class DatabaseAPI extends DataSource {
     return parseConfigParams(config);
   }
 
-  async createConfig({ puppetTypeName, numberOfPuppets, maxWorkingPuppets, puppetParams }) {
+  async createConfig({ puppetTypeName, numberOfPuppets, puppetParams }) {
     const config = await this.store.configs.create({
       puppetTypeName,
       numberOfPuppets,
-      maxWorkingPuppets,
       puppetParams: JSON.stringify(puppetParams)
     })
     return parseConfigParams(config);

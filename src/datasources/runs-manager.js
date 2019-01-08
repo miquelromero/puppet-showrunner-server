@@ -1,5 +1,5 @@
 const { DataSource } = require('apollo-datasource');
-const Run = require('../runner/run')
+const runs = require('../runner/runs')
 
 class RunsManagerAPI extends DataSource {
 
@@ -13,7 +13,10 @@ class RunsManagerAPI extends DataSource {
   }
 
   async createRun(runId, {puppetTypeName, numberOfPuppets, puppetParams}) {
-    this.store.ongoingRuns[runId] = new Run(this.store, runId, puppetTypeName, numberOfPuppets, puppetParams);
+    const strategy = 'SimpleRun';
+    const run = new runs[strategy](this.store, runId, puppetTypeName, numberOfPuppets, puppetParams);
+    this.store.ongoingRuns[runId] = run;
+    run.start();
   }
 
   isOngoing(runId) {

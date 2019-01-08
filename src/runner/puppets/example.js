@@ -2,5 +2,4 @@
 // It should also tell its parent to change status and url in the database when necessary.
 const argv = require('minimist')(process.argv.slice(2));
 
-console.log("I'm a puppet doing a console.log");
-console.error("I'm a puppet doing a console.error");
+console.log("Puppet started with following arguments", argv);

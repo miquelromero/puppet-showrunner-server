@@ -31,7 +31,6 @@ module.exports.createStore = () => {
       autoIncrement: true,
     },
     numberOfPuppets: SQL.INTEGER,
-    maxWorkingPuppets: SQL.INTEGER,
     puppetTypeName: SQL.STRING,
     puppetParams: SQL.TEXT,
     createdAt: SQL.DATE,

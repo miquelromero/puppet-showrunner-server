@@ -11,14 +11,15 @@ class Run {
     this.numberOfPuppets = numberOfPuppets;
     this.puppetParams = puppetParams;
     this.puppets = {};
-    this.start()
-    return;
   }
 
+  async runStrategy() {
+    throw "This method needs to be implemented by a subclass";
+  }
+  
   async createPuppet() {
     const puppet = await this.store.puppets.create({runId: this.id});
     const puppetArgs = buildPuppetArgs(puppet.id, this.puppetParams)
-    console.log(puppetArgs);
     
     const child = child_process.fork(this.puppetPath, puppetArgs, { silent: true });
     child.stdout.on('data', (data) => {
@@ -36,9 +37,7 @@ class Run {
 
   async start() {
     logger.info('Run has started', {runId: this.id})
-    for (let i = 0; i < this.numberOfPuppets; i++) {
-      this.createPuppet()
-    }
+    this.runStrategy();
     logger.info('Run has ended', {runId: this.id})
   }
 }
