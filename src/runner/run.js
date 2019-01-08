@@ -12,9 +12,11 @@ class Run {
     this.puppetParams = puppetParams;
     this.puppets = {};
   }
+
   async runStrategy() {
     throw "This method needs to be implemented by a subclass";
   }
+  
   async createPuppet() {
     const puppet = await this.store.puppets.create({runId: this.id});
     const puppetArgs = buildPuppetArgs(puppet.id, this.puppetParams)
