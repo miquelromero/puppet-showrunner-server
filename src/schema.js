@@ -31,6 +31,7 @@ const typeDefs = gql`
     url: String
     state: String
     run: Run
+    isOngoing: Boolean
     logs: [Log]
     screenshot: String
   }

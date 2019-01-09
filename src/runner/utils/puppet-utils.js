@@ -1,28 +1,36 @@
-const puppetParams = require('minimist')(process.argv.slice(2));
-
-const registerPage = (page) => {
-  // Listen to requests from parent (take screenshots, die...)
-  process.on('message', (message) => {
-    switch(message) {
-      case 'screenshot':
-        const path = `${puppetParams.id}-${new Date().toISOString()}.png`;
-        console.log('saving screenshot to path: ', path)
-        // TODO await page.screenshot({path});
-        process.send({request: 'screenshot', response: path});
-        break;
-    }
+const convertParamsToArgs = (params) => {
+  let args = [];
+  params.forEach((param) => {
+    args.push('--' + param.param);
+    args.push('' + param.value);
   })
-
-  // Watch stuff (url changes...) and speak to parent
-
+  return args;
 }
 
-const setStatus = (status) => {
-  process.send({status});
+const buildPuppetArgs = (puppetId, puppetParams) => {
+  return [
+    '--id', puppetId,
+    ...convertParamsToArgs(puppetParams)
+  ]
+}
+
+const getPuppetPath = (puppetTypeName) => {
+  return 'src/runner/puppets/' + puppetTypeName + '.js';
+}
+
+const puppetRequest = (puppet, request) => {
+  puppet.send(request);
+  return new Promise((resolve) => {
+    puppet.on("message", (message) => {
+      if (message.request === request) {
+        resolve(message.response)
+      }
+    })
+  });
 }
 
 module.exports = {
-  registerPage,
-  puppetParams,
-  setStatus
+  buildPuppetArgs,
+  getPuppetPath,
+  puppetRequest
 }

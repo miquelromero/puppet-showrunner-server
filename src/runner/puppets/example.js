@@ -1,4 +1,4 @@
-const {registerPage, puppetParams, setStatus} = require('../utils/puppet-utils');
+const {registerPage, puppetParams, setStatus} = require('../utils/process-utils');
 const puppeteer = require('puppeteer');
 
 (async () => {
