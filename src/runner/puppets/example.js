@@ -6,8 +6,10 @@ const puppeteer = require('puppeteer');
   const page = await browser.newPage();
   registerPage(page);
   try {
+    setStatus('working')
     await page.goto('https://www.google.com');
     await page.type('input[name=q]', puppetParams.query);
     await page.click('input[name=btnK]');
+    setStatus('idle')
   } catch {}
 })();
