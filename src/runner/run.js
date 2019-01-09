@@ -1,6 +1,6 @@
 const child_process = require('child_process');
 const logger = require('./utils/logger');
-const {buildPuppetArgs, getPuppetPath} = require('./utils/run-helper');
+const {buildPuppetArgs, getPuppetPath, puppetRequest} = require('./utils/run-utils');
 
 class Run {
   constructor(store, runId, puppetTypeName, numberOfPuppets, puppetParams) {
@@ -35,10 +35,19 @@ class Run {
     this.puppets[puppetId] = child;
   }
 
+  getPuppet(puppetId) {
+    return this.puppets[puppetId];
+  }
+
   async start() {
     logger.info('Run has started', {runId: this.id})
     this.runStrategy();
     logger.info('Run has ended', {runId: this.id})
+  }
+
+  async getScreenshot(puppetId) {
+    const puppet = this.getPuppet(puppetId);
+    return await puppetRequest(puppet, 'screenshot');
   }
 }
 

@@ -12,6 +12,10 @@ class RunsManagerAPI extends DataSource {
     return await this.store.puppets.create({runId});
   }
 
+  getRun(runId) {
+    return this.store.ongoingRuns[runId];
+  }
+
   async createRun(runId, {puppetTypeName, numberOfPuppets, puppetParams}) {
     const strategy = 'SimpleRun';
     const run = new runs[strategy](this.store, runId, puppetTypeName, numberOfPuppets, puppetParams);

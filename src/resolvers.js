@@ -35,7 +35,11 @@ module.exports = {
   },
   Puppet: {
     run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId),
-    logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id)
+    logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id),
+    screenshot: async (puppet, _args, { dataSources }) => {
+      const run = dataSources.runsManagerAPI.getRun(puppet.runId);
+      return await run.getScreenshot(puppet.id);
+    }
   },
   Config: {
     runs: async (config, _args, { dataSources }) => dataSources.databaseAPI.getRunsByConfig(config.id),

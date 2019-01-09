@@ -18,7 +18,19 @@ const getPuppetPath = (puppetTypeName) => {
   return 'src/runner/puppets/' + puppetTypeName + '.js';
 }
 
+const puppetRequest = (puppet, request) => {
+  puppet.send(request);
+  return new Promise((resolve) => {
+    puppet.on("message", (message) => {
+      if (message.request === request) {
+        resolve(message.response)
+      }
+    })
+  });
+}
+
 module.exports = {
   buildPuppetArgs,
-  getPuppetPath
+  getPuppetPath,
+  puppetRequest
 }

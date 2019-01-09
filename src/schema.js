@@ -32,6 +32,7 @@ const typeDefs = gql`
     state: String
     run: Run
     logs: [Log]
+    screenshot: String
   }
 
   type Run {

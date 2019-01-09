@@ -1,5 +1,13 @@
-// TODO: This is a puppet example which should visit a website and just stay there
-// It should also tell its parent to change status and url in the database when necessary.
-const argv = require('minimist')(process.argv.slice(2));
+const {registerPage, puppetParams, setStatus} = require('../utils/puppet-utils');
+const puppeteer = require('puppeteer');
 
-console.log("Puppet started with following arguments", argv);
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  registerPage(page);
+  try {
+    await page.goto('https://www.google.com');
+    await page.type('input[name=q]', puppetParams.query);
+    await page.click('input[name=btnK]');
+  } catch {}
+})();
