@@ -14,7 +14,12 @@ class RunnerAPI extends DataSource {
   
   getScreenshot(puppetId) {
     const puppet = this.store.ongoingPuppets[puppetId];
-    return puppet.getScreenshot();
+    return puppet != null ? puppet.getScreenshot() : null
+  }
+
+  getUrl(puppetId) {
+    const puppet = this.store.ongoingPuppets[puppetId];
+    return puppet != null ? puppet.puppet.getUrl() : null
   }
 
   createRun(runId, {puppetTypeName, numberOfPuppets, puppetParams}) {

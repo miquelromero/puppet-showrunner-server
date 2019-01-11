@@ -7,7 +7,8 @@ module.exports = {
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: (root, _args, context) => true, // TODO: Find a better way of doing this
     puppetTypes: (root, _args, context) => puppetTypes,
-    logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs()
+    logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs(),
+    screenshot: async (root, { puppetId }, { dataSources }) => await dataSources.runnerAPI.getScreenshot(puppetId)
   },
   Mutation: {
     createRun: async (_, config, { dataSources }) => {
@@ -37,13 +38,7 @@ module.exports = {
     run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId),
     isOngoing: (puppet, _args, { dataSources }) => dataSources.runnerAPI.isPuppetOngoing(puppet.id),
     logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id),
-    screenshot: async (puppet, _args, { dataSources }) => {
-      if (dataSources.runnerAPI.isPuppetOngoing(puppet.id)) {
-        return await dataSources.runnerAPI.getScreenshot(puppet.id);
-      } else {
-        return null;
-      }
-    }
+    url: async (puppet, _args, { dataSources }) => await dataSources.runnerAPI.getUrl(puppet.id)
   },
   Config: {
     runs: async (config, _args, { dataSources }) => dataSources.databaseAPI.getRunsByConfig(config.id),
