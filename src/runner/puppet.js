@@ -31,14 +31,18 @@ class Puppet {
   }
 
   listenToMessages() {
-    this.process.on('message', (message) => {
-      console.log('message from child ' + this.id, message);
+    this.process.on('message', async (message) => {
+      const puppet = await this.store.puppets.findByPk(this.id);
+      puppet.update({state: message.state})
     })
   }
 
-  
   async getScreenshot() {
     return await puppetRequest(this.process, 'screenshot');
+  }
+
+  async getUrl() {
+    return await puppetRequest(this.process, 'url');
   }
 }
 
