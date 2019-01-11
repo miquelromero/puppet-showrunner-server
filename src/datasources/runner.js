@@ -22,6 +22,7 @@ class RunnerAPI extends DataSource {
 
   getUrl(puppetId) {
     const puppet = this.getPuppet(puppetId);
+    console.log('puppet')
     return puppet != null ? puppet.puppet.getUrl() : null
   }
 
