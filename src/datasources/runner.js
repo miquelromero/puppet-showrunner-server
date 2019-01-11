@@ -11,29 +11,33 @@ class RunnerAPI extends DataSource {
   getRun(runId) {
     return this.store.ongoingRuns[runId];
   }
+
+  getPuppet(puppetId) {
+    return this.store.ongoingPuppets[puppetId];
+  }
   
   getScreenshot(puppetId) {
-    const puppet = this.store.ongoingPuppets[puppetId];
+    const puppet = this.getPuppet(puppetId);
     return puppet != null ? puppet.getScreenshot() : null
   }
 
   getUrl(puppetId) {
-    const puppet = this.store.ongoingPuppets[puppetId];
+    const puppet = this.getPuppet(puppetId);
     return puppet != null ? puppet.puppet.getUrl() : null
   }
 
-  createRun(runId, {puppetTypeName, numberOfPuppets, puppetParams}) {
+  createRun(runId, { puppetTypeName, numberOfPuppets, puppetParams }) {
     const strategy = 'SimpleRun';
     const run = new runs[strategy](this.store, runId, puppetTypeName, numberOfPuppets, puppetParams);
     run.start();
   }
 
   isRunOngoing(runId) {
-    return this.store.ongoingRuns[runId] != null;
+    return this.getRun(runId) != null;
   }
 
   isPuppetOngoing(puppetId) {
-    return this.store.ongoingPuppets[puppetId] != null;
+    return this.getPuppet(puppetId) != null;
   }
 }
 
