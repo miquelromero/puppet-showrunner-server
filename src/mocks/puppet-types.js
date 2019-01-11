@@ -3,7 +3,7 @@ const puppetTypes = [
   {
     name: "example",
     title: "This is a puppet example",
-    description: "This puppet search something in Google",
+    description: "This puppet searches your query on Google",
     params: [
       {
         name: "query",

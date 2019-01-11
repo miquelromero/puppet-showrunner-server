@@ -1,15 +1,17 @@
-const {registerPage, puppetParams, setStatus} = require('../utils/process-utils');
+const {registerPage, puppetParams, setState} = require('../utils/process-utils');
 const puppeteer = require('puppeteer');
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  registerPage(page);
-  try {
-    setStatus('working')
+try {
+  (async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    registerPage(page);
+    setState('working')
     await page.goto('https://www.google.com');
     await page.type('input[name=q]', puppetParams.query);
-    await page.click('input[name=btnK]');
-    setStatus('idle')
-  } catch {}
-})();
+    await page.keyboard.press('Enter');
+    setState('idle');
+  })() 
+} catch (err) {
+  console.error(err)
+}
