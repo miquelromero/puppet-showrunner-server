@@ -2,7 +2,6 @@ const { DataSource } = require('apollo-datasource');
 const runs = require('../runner/runs')
 
 class RunnerAPI extends DataSource {
-
   constructor({ store }) {
     super();
     this.store = store;
