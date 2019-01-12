@@ -1,3 +1,5 @@
+const SimpleRun = require('./simple-run');
+
 module.exports = {
-  SimpleRun: require('./simple-run')
-}
+  SimpleRun,
+};

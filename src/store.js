@@ -1,7 +1,7 @@
 const SQL = require('sequelize');
 
 module.exports.createStore = () => {
-  const Op = SQL.Op;
+  const { Op } = SQL;
   const operatorsAliases = {
     $in: Op.in,
   };
@@ -21,7 +21,7 @@ module.exports.createStore = () => {
     },
     configId: SQL.INTEGER,
     createdAt: SQL.DATE,
-    updatedAt: SQL.DATE
+    updatedAt: SQL.DATE,
   });
 
   const configs = db.define('config', {
@@ -34,7 +34,7 @@ module.exports.createStore = () => {
     puppetTypeName: SQL.STRING,
     puppetParams: SQL.TEXT,
     createdAt: SQL.DATE,
-    updatedAt: SQL.DATE
+    updatedAt: SQL.DATE,
   });
 
   const puppets = db.define('puppet', {
@@ -46,18 +46,18 @@ module.exports.createStore = () => {
     runId: SQL.INTEGER,
     state: SQL.STRING,
     createdAt: SQL.DATE,
-    updatedAt: SQL.DATE
+    updatedAt: SQL.DATE,
   });
 
-  const ongoingRuns = {}
+  const ongoingRuns = {};
 
-  const ongoingPuppets = {}
+  const ongoingPuppets = {};
 
   return {
     puppets,
     runs,
     configs,
     ongoingRuns,
-    ongoingPuppets
-  }
+    ongoingPuppets,
+  };
 };

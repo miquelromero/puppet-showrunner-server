@@ -4,45 +4,45 @@ const { promisify } = require('util');
 
 os.cpuUsage[promisify.custom] = () => new Promise(os.cpuUsage);
 os.cpuFree[promisify.custom] = () => new Promise(os.cpuFree);
-const cpuUsage = promisify(os.cpuUsage)
-const cpuFree = promisify(os.cpuFree)
+const cpuUsage = promisify(os.cpuUsage);
+const cpuFree = promisify(os.cpuFree);
 
 class OsUtilsAPI extends DataSource {
-  getPlatform() {
+  static getPlatform() {
     return os.platform();
-  };
+  }
 
-  getCpuCount() {
+  static getCpuCount() {
     return os.cpuCount();
-  };
+  }
 
-  async getCpuUsage() {
-    return await cpuUsage()
-  };
+  static async getCpuUsage() {
+    return cpuUsage();
+  }
 
-  async getCpuFree() {
-    return await cpuFree()
-  };
+  static async getCpuFree() {
+    return cpuFree();
+  }
 
-  getFreemem() {
+  static getFreemem() {
     return os.freemem();
-  };
+  }
 
-  getTotalmem() {
+  static getTotalmem() {
     return os.totalmem();
-  };
+  }
 
-  getFreememPercentage() {
+  static getFreememPercentage() {
     return os.freememPercentage();
-  };
+  }
 
-  getSysUptime() {
+  static getSysUptime() {
     return os.sysUptime();
-  };
+  }
 
-  getProcessUptime() {
+  static getProcessUptime() {
     return os.processUptime();
-  };
+  }
 }
 
 module.exports = OsUtilsAPI;

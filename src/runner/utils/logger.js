@@ -1,6 +1,7 @@
 const { createLogger, format, transports } = require('winston');
-const { combine, timestamp } = format;
 require('winston-daily-rotate-file');
+
+const { combine, timestamp } = format;
 
 const transport = new (transports.DailyRotateFile)({
   filename: '%DATE%.log',
@@ -9,17 +10,17 @@ const transport = new (transports.DailyRotateFile)({
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
   maxSize: '20m',
-  maxFiles: '14d'
+  maxFiles: '14d',
 });
 
 const logger = createLogger({
   format: combine(
     timestamp(),
-    format.json()
+    format.json(),
   ),
   transports: [
-    transport
-  ]
+    transport,
+  ],
 });
 
 module.exports = logger;

@@ -11,13 +11,14 @@ class Run {
     this.puppets = {};
   }
 
-  async runStrategy() {
-    throw "This method needs to be implemented by a subclass";
+  static async runStrategy() {
+    throw new Error('This method needs to be implemented by a subclass');
   }
-  
+
   async createPuppet() {
-    const dbPuppet = await this.store.puppets.create({runId: this.id});
-    const puppet = new Puppet(this.store, dbPuppet.id, this.id, this.puppetTypeName, this.puppetParams);
+    const dbPuppet = await this.store.puppets.create({ runId: this.id });
+    const puppet = new Puppet(this.store, dbPuppet.id, this.id, this.puppetTypeName,
+      this.puppetParams);
     puppet.start();
     this.addPuppet(puppet.id, puppet);
   }
@@ -32,11 +33,10 @@ class Run {
 
   async start() {
     this.store.ongoingRuns[this.id] = this;
-    logger.info('Run has started', {runId: this.id})
+    logger.info('Run has started', { runId: this.id });
     this.runStrategy();
-    logger.info('Run has ended', {runId: this.id})
+    logger.info('Run has ended', { runId: this.id });
   }
-
 }
 
 module.exports = Run;

@@ -3,25 +3,30 @@ const puppetParams = require('minimist')(process.argv.slice(2));
 const registerPage = (page) => {
   // Listen to requests from parent (take screenshots, die...)
   process.on('message', async (message) => {
-    switch(message) {
+    switch (message) {
       case 'screenshot':
-        const screenshot = await page.screenshot({encoding: 'base64'});
-        process.send({request: 'screenshot', response: screenshot});
+        process.send({
+          request: 'screenshot',
+          response: await page.screenshot({ encoding: 'base64' }),
+        });
         break;
       case 'url':
-        const url = await page.url();
-        process.send({request: 'url', response: url});
+        process.send({
+          request: 'url',
+          response: await await page.url(),
+        });
         break;
+      default:
     }
   });
-}
+};
 
 const setState = (state) => {
-  process.send({state});
-}
+  process.send({ state });
+};
 
 module.exports = {
   registerPage,
   puppetParams,
-  setState
-}
+  setState,
+};
