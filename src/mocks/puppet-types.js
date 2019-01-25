@@ -3,11 +3,11 @@ const puppetTypes = [
   {
     name: "example",
     title: "This is a puppet example",
-    description: "This puppet opens a website and stays there",
+    description: "This puppet searches your query on Google",
     params: [
       {
-        name: "url",
-        label: "Url",
+        name: "query",
+        label: "Text to search",
         mandatory: true,
         type: "String"
       }

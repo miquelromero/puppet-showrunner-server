@@ -2,7 +2,7 @@ const { ApolloServer } = require("apollo-server");
 const resolvers = require("./resolvers");
 const typeDefs = require("./schema");
 const DatabaseAPI = require('./datasources/database');
-const RunsManagerAPI = require('./datasources/runs-manager');
+const RunnerAPI = require('./datasources/runner');
 const OsUtilsAPI = require('./datasources/os-utils');
 const LogsAPI = require('./datasources/logs');
 const { createStore } = require('./store');
@@ -13,7 +13,7 @@ const store = createStore();
 // set up any dataSources our resolvers need
 const dataSources = () => ({
   databaseAPI: new DatabaseAPI({store}),
-  runsManagerAPI: new RunsManagerAPI({store}),
+  runnerAPI: new RunnerAPI({store}),
   osUtilsAPI: new OsUtilsAPI(),
   logsAPI: new LogsAPI()
 });

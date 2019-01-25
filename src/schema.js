@@ -8,6 +8,7 @@ const typeDefs = gql`
     stats: Stats
     puppetTypes: [PuppetType]
     logs: [Log]
+    screenshot(puppetId: ID!): String
   }
 
   type Mutation {
@@ -31,6 +32,7 @@ const typeDefs = gql`
     url: String
     state: String
     run: Run
+    isOngoing: Boolean
     logs: [Log]
   }
 

@@ -7,7 +7,8 @@ module.exports = {
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: (root, _args, context) => true, // TODO: Find a better way of doing this
     puppetTypes: (root, _args, context) => puppetTypes,
-    logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs()
+    logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs(),
+    screenshot: async (root, { puppetId }, { dataSources }) => await dataSources.runnerAPI.getScreenshot(puppetId)
   },
   Mutation: {
     createRun: async (_, config, { dataSources }) => {
@@ -15,7 +16,7 @@ module.exports = {
       // TODO: Error handling
       const createdRun = await dataSources.databaseAPI.createRun(createdConfig.id);
       // TODO: Error handling
-      dataSources.runsManagerAPI.createRun(createdRun.id, createdConfig);
+      dataSources.runnerAPI.createRun(createdRun.id, createdConfig);
       return createdRun;
     },
     createRunByConfig: async (_, { configId }, { dataSources }) => {
@@ -23,19 +24,21 @@ module.exports = {
       // TODO: Error handling
       const createdRun = await dataSources.databaseAPI.createRun(obtainedConfig.id);
       // TODO: Error handling
-      dataSources.runsManagerAPI.createRun(createdRun.id, obtainedConfig);
+      dataSources.runnerAPI.createRun(createdRun.id, obtainedConfig);
       return createdRun;
     }
   },
   Run: {
     puppets: async (run, _args, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(run.id),
     config: async (run, _args, { dataSources }) => dataSources.databaseAPI.getConfig(run.configId),
-    isOngoing: (run, _args, { dataSources }) => dataSources.runsManagerAPI.isOngoing(run.id),
+    isOngoing: (run, _args, { dataSources }) => dataSources.runnerAPI.isRunOngoing(run.id),
     logs: (run, _args, { dataSources }) => dataSources.logsAPI.getLogsByRun(run.id)
   },
   Puppet: {
     run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId),
-    logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id)
+    isOngoing: (puppet, _args, { dataSources }) => dataSources.runnerAPI.isPuppetOngoing(puppet.id),
+    logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id),
+    url: async (puppet, _args, { dataSources }) => await dataSources.runnerAPI.getUrl(puppet.id)
   },
   Config: {
     runs: async (config, _args, { dataSources }) => dataSources.databaseAPI.getRunsByConfig(config.id),

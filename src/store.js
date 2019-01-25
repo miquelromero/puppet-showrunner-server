@@ -44,7 +44,6 @@ module.exports.createStore = () => {
       autoIncrement: true,
     },
     runId: SQL.INTEGER,
-    url: SQL.STRING,
     state: SQL.STRING,
     createdAt: SQL.DATE,
     updatedAt: SQL.DATE
@@ -52,10 +51,13 @@ module.exports.createStore = () => {
 
   const ongoingRuns = {}
 
+  const ongoingPuppets = {}
+
   return {
     puppets,
     runs,
     configs,
-    ongoingRuns
+    ongoingRuns,
+    ongoingPuppets
   }
 };
