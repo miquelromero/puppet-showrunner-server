@@ -1,3 +1,5 @@
+const uniqid = require('uniqid');
+
 const convertParamsToArgs = (params) => {
   const args = [];
   params.forEach((param) => {
@@ -14,14 +16,17 @@ const buildPuppetArgs = (puppetId, puppetParams) => [
 
 const getPuppetPath = puppetTypeName => `src/runner/puppets/${puppetTypeName}.js`;
 
-const puppetRequest = (puppet, request) => {
-  puppet.send(request);
+const puppetRequest = (puppet, type) => {
+  const requestId = uniqid();
+  puppet.send({ id: requestId, type });
   return new Promise((resolve) => {
-    puppet.on('message', (message) => {
-      if (message.request === request) {
-        resolve(message.response);
+    const handleResponse = ({ id, response }) => {
+      if (id === requestId) {
+        resolve(response);
+        puppet.removeListener('message', handleResponse);
       }
-    });
+    };
+    puppet.on('message', handleResponse);
   });
 };
 
