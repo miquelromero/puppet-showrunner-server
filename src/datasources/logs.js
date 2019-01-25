@@ -1,9 +1,7 @@
 const { DataSource } = require('apollo-datasource');
-const fs = require('fs');
-const readline = require('readline');
 
-const readLogs = (filterFn) => {
-  let logs = []
+const readLogs = () => {
+  const logs = [];
   /* TODO: Implement log files reader
   const instream = fs.createReadStream('logs/2019-01-06.log');
   const rl = readline.createInterface({input: instream});
@@ -15,22 +13,21 @@ const readLogs = (filterFn) => {
   });
   */
   return logs;
-}
+};
 
 class LogsAPI extends DataSource {
-
-  getLogs() {
-    const filterFn = (log) => true;
+  static getLogs() {
+    const filterFn = () => true;
     return readLogs(filterFn);
   }
 
-  getLogsByRun(runId) {
-    const filterFn = (log) => log.runId == runId;
+  static getLogsByRun(runId) {
+    const filterFn = log => log.runId === runId;
     return readLogs(filterFn);
   }
 
-  getLogsByPuppet(puppetId) {
-    const filterFn = (log) => log.puppetId == puppetId;
+  static getLogsByPuppet(puppetId) {
+    const filterFn = log => log.puppetId === puppetId;
     return readLogs(filterFn);
   }
 }
