@@ -1,5 +1,3 @@
-const { puppetTypes } = require('./mocks/puppet-types');
-
 module.exports = {
   Query: {
     puppets: async (root, { runId }, { dataSources }) => dataSources
@@ -7,45 +5,39 @@ module.exports = {
     runs: async (root, _args, { dataSources }) => dataSources.databaseAPI.getRuns(),
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: () => true, // TODO: Find a better way of doing this
-    puppetTypes: () => puppetTypes,
+    tasks: async (root, _args, { dataSources }) => dataSources.databaseAPI.getTasks(),
     logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs(),
     screenshot: async (root, { puppetId }, { dataSources }) => dataSources
       .runnerAPI.getScreenshot(puppetId),
   },
   Mutation: {
     createRun: async (_, config, { dataSources }) => {
-      const createdConfig = await dataSources.databaseAPI.createConfig(config);
-      // TODO: Error handling
-      const createdRun = await dataSources.databaseAPI.createRun(createdConfig.id);
-      // TODO: Error handling
-      dataSources.runnerAPI.createRun(createdRun.id, createdConfig);
+      const createdRun = await dataSources.databaseAPI.createRun(config);
+      dataSources.runnerAPI.createRun(createdRun);
       return createdRun;
     },
-    createRunByConfig: async (_, { configId }, { dataSources }) => {
-      const obtainedConfig = await dataSources.databaseAPI.getConfig(configId);
-      // TODO: Error handling
-      const createdRun = await dataSources.databaseAPI.createRun(obtainedConfig.id);
-      // TODO: Error handling
-      dataSources.runnerAPI.createRun(createdRun.id, obtainedConfig);
+    createRunFromPrevious: async (_, { runId }, { dataSources }) => {
+      const createdRun = await dataSources.databaseAPI.createRunFromPrevious(runId);
+      dataSources.runnerAPI.createRun(createdRun);
       return createdRun;
     },
+    createTask: async (_, config, { dataSources }) => dataSources
+      .databaseAPI.createTask(config),
+    updateTask: async (_, config, { dataSources }) => dataSources
+      .databaseAPI.updateTask(config),
   },
   Run: {
     puppets: async (run, _args, { dataSources }) => dataSources.databaseAPI.getPuppetsByRun(run.id),
-    config: async (run, _args, { dataSources }) => dataSources.databaseAPI.getConfig(run.configId),
     isOngoing: (run, _args, { dataSources }) => dataSources.runnerAPI.isRunOngoing(run.id),
     logs: (run, _args, { dataSources }) => dataSources.logsAPI.getLogsByRun(run.id),
+    task: async (run, _args, { dataSources }) => dataSources
+      .databaseAPI.getTask(run.taskId),
   },
   Puppet: {
     run: async (puppet, _args, { dataSources }) => dataSources.databaseAPI.getRun(puppet.runId),
     isOngoing: (puppet, _args, { dataSources }) => dataSources.runnerAPI.isPuppetOngoing(puppet.id),
     logs: (puppet, _args, { dataSources }) => dataSources.logsAPI.getLogsByPuppet(puppet.id),
     url: async (puppet, _args, { dataSources }) => dataSources.runnerAPI.getUrl(puppet.id),
-  },
-  Config: {
-    runs: async (config, _args, { dataSources }) => dataSources
-      .databaseAPI.getRunsByConfig(config.id),
-    puppetType: config => puppetTypes.find(pType => pType.name === config.puppetTypeName),
   },
   Stats: {
     platform: (_source, _args, { dataSources }) => dataSources.osUtilsAPI.getPlatform(),

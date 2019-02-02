@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint src/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.js --exec \"npm run lint --fix && node\"",
+    "start": "nodemon src/index.js --ignore src/runner/tasks/**/* --exec \"npm run lint --fix && node\"",
     "start:ci": "node src/index.js"
   },
   "repository": {

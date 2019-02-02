@@ -9,12 +9,11 @@ const convertParamsToArgs = (params) => {
   return args;
 };
 
-const buildPuppetArgs = (puppetId, puppetParams) => [
+const buildPuppetArgs = (puppetId, taskId, puppetParams) => [
   '--id', puppetId,
+  '--taskId', taskId,
   ...convertParamsToArgs(puppetParams),
 ];
-
-const getPuppetPath = puppetTypeName => `src/runner/puppets/${puppetTypeName}.js`;
 
 const puppetRequest = (puppet, type) => {
   const requestId = uniqid();
@@ -32,6 +31,5 @@ const puppetRequest = (puppet, type) => {
 
 module.exports = {
   buildPuppetArgs,
-  getPuppetPath,
   puppetRequest,
 };

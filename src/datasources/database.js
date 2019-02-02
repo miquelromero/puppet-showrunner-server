@@ -1,9 +1,5 @@
 const { DataSource } = require('apollo-datasource');
-
-const parseConfigParams = (config) => {
-  const puppetParams = JSON.parse(config.puppetParams);
-  return { ...config, puppetParams };
-};
+const { registerTask } = require('../runner/puppets/registerer');
 
 class DatabaseAPI extends DataSource {
   constructor({ store }) {
@@ -19,12 +15,12 @@ class DatabaseAPI extends DataSource {
     return this.store.runs.findAll();
   }
 
-  async getRunsByConfig(configId) {
-    return this.store.runs.findAll({
-      where: {
-        configId,
-      },
-    });
+  async getTask(id) {
+    return this.store.tasks.findByPk(id);
+  }
+
+  async getTasks() {
+    return this.store.tasks.findAll();
   }
 
   async getPuppet(id) {
@@ -39,29 +35,52 @@ class DatabaseAPI extends DataSource {
     });
   }
 
-  async getConfigs() {
-    const configs = await this.store.configs.findAll();
-    return configs.map(parseConfigParams);
-  }
-
-  async getConfig(id) {
-    const config = await this.store.configs.findByPk(id);
-    return parseConfigParams(config);
-  }
-
-  async createConfig({ puppetTypeName, numberOfPuppets, puppetParams }) {
-    const config = await this.store.configs.create({
-      puppetTypeName,
+  async createRunFromPrevious(runId) {
+    const {
+      task,
       numberOfPuppets,
-      puppetParams: JSON.stringify(puppetParams),
+      puppetParams,
+    } = await this.getRun(runId);
+    return this.store.runs.create({
+      task,
+      numberOfPuppets,
+      puppetParams,
     });
-    return parseConfigParams(config);
   }
 
-  async createRun(configId) {
+  async createRun({ taskId, numberOfPuppets, puppetParams }) {
     return this.store.runs.create({
-      configId,
+      taskId,
+      numberOfPuppets,
+      puppetParams,
     });
+  }
+
+  async createTask({
+    name, title, description, params, code,
+  }) {
+    const task = await this.store.tasks.create({
+      name,
+      title,
+      description,
+      params,
+    });
+    registerTask(task.id, code);
+    return task;
+  }
+
+  async updateTask({
+    id, name, title, description, params, code,
+  }) {
+    let task = await this.store.tasks.findByPk(id);
+    task = await task.update({
+      name,
+      title,
+      description,
+      params,
+    });
+    registerTask(task.id, code);
+    return task;
   }
 }
 

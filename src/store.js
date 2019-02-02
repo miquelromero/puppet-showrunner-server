@@ -19,20 +19,13 @@ module.exports.createStore = () => {
       primaryKey: true,
       autoIncrement: true,
     },
-    configId: SQL.INTEGER,
-    createdAt: SQL.DATE,
-    updatedAt: SQL.DATE,
-  });
-
-  const configs = db.define('config', {
-    id: {
-      type: SQL.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     numberOfPuppets: SQL.INTEGER,
-    puppetTypeName: SQL.STRING,
-    puppetParams: SQL.TEXT,
+    taskId: SQL.INTEGER,
+    puppetParams: {
+      type: SQL.TEXT,
+      get() { return JSON.parse(this.getDataValue('puppetParams')); },
+      set(value) { this.setDataValue('puppetParams', JSON.stringify(value)); },
+    },
     createdAt: SQL.DATE,
     updatedAt: SQL.DATE,
   });
@@ -49,6 +42,23 @@ module.exports.createStore = () => {
     updatedAt: SQL.DATE,
   });
 
+  const tasks = db.define('task', {
+    id: {
+      type: SQL.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    title: SQL.TEXT,
+    description: SQL.TEXT,
+    params: {
+      type: SQL.TEXT,
+      get() { return JSON.parse(this.getDataValue('params')); },
+      set(value) { this.setDataValue('params', JSON.stringify(value)); },
+    },
+    createdAt: SQL.DATE,
+    updatedAt: SQL.DATE,
+  });
+
   const ongoingRuns = {};
 
   const ongoingPuppets = {};
@@ -56,7 +66,7 @@ module.exports.createStore = () => {
   return {
     puppets,
     runs,
-    configs,
+    tasks,
     ongoingRuns,
     ongoingPuppets,
   };

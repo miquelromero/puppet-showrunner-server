@@ -1,22 +1,23 @@
 const { fork } = require('child_process');
 const logger = require('./utils/logger');
-const { buildPuppetArgs, getPuppetPath, puppetRequest } = require('./utils/puppet-utils');
+const { buildPuppetArgs, puppetRequest } = require('./utils/puppet-utils');
+
+const basePuppetPath = 'src/runner/puppets/base.js';
 
 class Puppet {
-  constructor(store, puppetId, runId, puppetTypeName, puppetParams) {
+  constructor(store, puppetId, runId, taskId, puppetParams) {
     this.store = store;
     this.id = puppetId;
     this.runId = runId;
-    this.puppetTypeName = puppetTypeName;
-    this.puppetPath = getPuppetPath(puppetTypeName);
+    this.taskId = taskId;
     this.puppetParams = puppetParams;
     this.process = null;
   }
 
   async start() {
     this.store.ongoingPuppets[this.id] = this;
-    const puppetArgs = buildPuppetArgs(this.id, this.puppetParams);
-    this.process = fork(this.puppetPath, puppetArgs, { silent: true });
+    const puppetArgs = buildPuppetArgs(this.id, this.taskId, this.puppetParams);
+    this.process = fork(basePuppetPath, puppetArgs, { silent: true });
     this.listenToLogs();
     this.listenToMessages();
   }
