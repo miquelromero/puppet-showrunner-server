@@ -1,5 +1,5 @@
 const { DataSource } = require('apollo-datasource');
-const { registerTask } = require('../runner/puppets/registerer');
+const { createTask, updateTask } = require('../runner/utils/task-utils');
 
 class DatabaseAPI extends DataSource {
   constructor({ store }) {
@@ -65,7 +65,7 @@ class DatabaseAPI extends DataSource {
       description,
       params,
     });
-    registerTask(task.id, code);
+    createTask(task.id, code);
     return task;
   }
 
@@ -79,7 +79,7 @@ class DatabaseAPI extends DataSource {
       description,
       params,
     });
-    registerTask(task.id, code);
+    updateTask(task.id, code);
     return task;
   }
 }
