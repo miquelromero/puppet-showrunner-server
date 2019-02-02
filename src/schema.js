@@ -14,7 +14,7 @@ const typeDefs = gql`
   type Mutation {
     createRun(
       numberOfPuppets: Int,
-      taskId: Int,
+      taskId: ID!,
       puppetParams: [ParamValueInput]
     ): Run
     createRunFromPrevious(
