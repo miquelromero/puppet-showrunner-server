@@ -6,7 +6,7 @@ const typeDefs = gql`
     run(id: ID!): Run
     puppets(runId: ID!): [Puppet]
     stats: Stats
-    puppetTypes: [PuppetType]
+    tasks: [Task]
     logs: [Log]
     screenshot(puppetId: ID!): String
   }
@@ -14,12 +14,34 @@ const typeDefs = gql`
   type Mutation {
     createRun(
       numberOfPuppets: Int,
-      puppetTypeName: String,
+      taskId: ID!,
       puppetParams: [ParamValueInput]
     ): Run
-    createRunByConfig(
-      configId: ID!
+    createRunFromPrevious(
+      runId: ID!
     ): Run
+    createTask(
+      name: String
+      title: String
+      description: String
+      params: [TaskParamInput]
+      code: String
+    ): Task
+    updateTask(
+      id: ID!
+      name: String
+      title: String
+      description: String
+      params: [TaskParamInput]
+      code: String
+    ): Task
+  }
+
+  input TaskParamInput {
+    name: String
+    label: String
+    mandatory: Boolean
+    type: String
   }
 
   input ParamValueInput {
@@ -38,38 +60,32 @@ const typeDefs = gql`
 
   type Run {
     id: ID!
-    config: Config
+    numberOfPuppets: Int
+    task: Task
+    puppetParams: [TaskParamValue]
     puppets: [Puppet]
     createdAt: String
     isOngoing: Boolean
     logs: [Log]
   }
 
-  type Config {
-    id: ID!
-    runs: [Run]
-    numberOfPuppets: Int
-    puppetType: PuppetType
-    puppetParams: [PuppetTypeParamValue]
-  }
-
-  type PuppetTypeParamValue {
+  type TaskParamValue {
     param: String
     value: String
   }
 
-  type PuppetTypeParam {
+  type TaskParam {
     name: String
     label: String
     mandatory: Boolean
     type: String
   }
 
-  type PuppetType {
-    name: String
+  type Task {
+    id: ID!
     title: String
     description: String
-    params: [PuppetTypeParam]
+    params: [TaskParam]
   }
 
   type Stats {

@@ -1,4 +1,4 @@
-const puppetParams = require('minimist')(process.argv.slice(2));
+const processArguments = require('minimist')(process.argv.slice(2));
 
 const registerPage = (page) => {
   // Listen to requests from parent (take screenshots, die...)
@@ -27,6 +27,6 @@ const setState = (state) => {
 
 module.exports = {
   registerPage,
-  puppetParams,
+  processArguments,
   setState,
 };

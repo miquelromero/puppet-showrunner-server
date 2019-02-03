@@ -25,10 +25,15 @@ class RunnerAPI extends DataSource {
     return puppet != null ? puppet.getUrl() : null;
   }
 
-  createRun(runId, { puppetTypeName, numberOfPuppets, puppetParams }) {
+  createRun(runEntity) {
     const strategy = 'SimpleRun';
-    const run = new runs[strategy](this.store, runId, puppetTypeName, numberOfPuppets,
-      puppetParams);
+    const {
+      id,
+      taskId,
+      numberOfPuppets,
+      puppetParams,
+    } = runEntity;
+    const run = new runs[strategy](this.store, id, taskId, numberOfPuppets, puppetParams);
     run.start();
   }
 
