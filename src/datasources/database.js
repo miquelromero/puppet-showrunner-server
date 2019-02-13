@@ -1,10 +1,15 @@
 const { DataSource } = require('apollo-datasource');
-const { createTask, updateTask } = require('../runner/utils/task-utils');
+const { createTask, updateTask, initTasks } = require('../runner/utils/task-utils');
 
 class DatabaseAPI extends DataSource {
   constructor({ store }) {
     super();
     this.store = store;
+  }
+
+  async init() {
+    const tasks = await this.getTasks();
+    initTasks(tasks);
   }
 
   async getRun(id) {
@@ -64,6 +69,7 @@ class DatabaseAPI extends DataSource {
       title,
       description,
       params,
+      code,
     });
     createTask(task.id, code);
     return task;
@@ -78,6 +84,7 @@ class DatabaseAPI extends DataSource {
       title,
       description,
       params,
+      code,
     });
     updateTask(task.id, code);
     return task;

@@ -8,39 +8,39 @@ const cpuUsage = promisify(os.cpuUsage);
 const cpuFree = promisify(os.cpuFree);
 
 class OsUtilsAPI extends DataSource {
-  static getPlatform() {
+  getPlatform() {
     return os.platform();
   }
 
-  static getCpuCount() {
+  getCpuCount() {
     return os.cpuCount();
   }
 
-  static async getCpuUsage() {
+  async getCpuUsage() {
     return cpuUsage();
   }
 
-  static async getCpuFree() {
+  async getCpuFree() {
     return cpuFree();
   }
 
-  static getFreemem() {
+  getFreemem() {
     return os.freemem();
   }
 
-  static getTotalmem() {
+  getTotalmem() {
     return os.totalmem();
   }
 
-  static getFreememPercentage() {
+  getFreememPercentage() {
     return os.freememPercentage();
   }
 
-  static getSysUptime() {
+  getSysUptime() {
     return os.sysUptime();
   }
 
-  static getProcessUptime() {
+  getProcessUptime() {
     return os.processUptime();
   }
 }
