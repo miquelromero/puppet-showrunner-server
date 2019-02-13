@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const tasksPath = 'src/runner/tasks';
 
@@ -27,4 +27,11 @@ const updateTask = (id, code) => {
   createOrUpdateCode(id, code);
 };
 
-module.exports = { createTask, updateTask };
+const initTasks = (tasks) => {
+  fs.emptyDirSync(tasksPath);
+  tasks.forEach((task) => {
+    createTask(task.id, task.code);
+  });
+};
+
+module.exports = { createTask, updateTask, initTasks };

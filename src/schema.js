@@ -7,6 +7,7 @@ const typeDefs = gql`
     puppets(runId: ID!): [Puppet]
     stats: Stats
     tasks: [Task]
+    task(id: ID!): Task
     logs: [Log]
     screenshot(puppetId: ID!): String
   }
@@ -86,6 +87,7 @@ const typeDefs = gql`
     title: String
     description: String
     params: [TaskParam]
+    code: String
   }
 
   type Stats {

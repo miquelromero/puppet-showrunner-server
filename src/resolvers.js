@@ -6,6 +6,7 @@ module.exports = {
     run: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getRun(id),
     stats: () => true, // TODO: Find a better way of doing this
     tasks: async (root, _args, { dataSources }) => dataSources.databaseAPI.getTasks(),
+    task: async (root, { id }, { dataSources }) => dataSources.databaseAPI.getTask(id),
     logs: (root, _args, { dataSources }) => dataSources.logsAPI.getLogs(),
     screenshot: async (root, { puppetId }, { dataSources }) => dataSources
       .runnerAPI.getScreenshot(puppetId),

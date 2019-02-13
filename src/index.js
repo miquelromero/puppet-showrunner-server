@@ -25,6 +25,9 @@ const server = new ApolloServer({
   dataSources,
 });
 
+// Initialization
+dataSources().databaseAPI.init();
+
 // Start our server if we're not in a test env.
 // if we're in a test env, we'll manually start it in a test
 if (process.env.NODE_ENV !== 'test') {

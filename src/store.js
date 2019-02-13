@@ -55,6 +55,7 @@ module.exports.createStore = () => {
       get() { return JSON.parse(this.getDataValue('params')); },
       set(value) { this.setDataValue('params', JSON.stringify(value)); },
     },
+    code: SQL.TEXT,
     createdAt: SQL.DATE,
     updatedAt: SQL.DATE,
   });
